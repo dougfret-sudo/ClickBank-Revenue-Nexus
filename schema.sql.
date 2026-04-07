@@ -1,0 +1,20 @@
+-- Create the main Revenue Tracking Table
+CREATE TABLE clickbank_nexus_revenue (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id VARCHAR(50) NOT NULL UNIQUE,  -- Unique ID from ClickBank
+    product_sku VARCHAR(50),                     -- The specific item sold
+    sale_amount DECIMAL(10, 2) NOT NULL,         -- Total customer paid
+    commission_earned DECIMAL(10, 2) NOT NULL,   -- Your cut (e.g., 50%)
+    traffic_source VARCHAR(100),                 -- Where the ad was placed
+    status VARCHAR(20) DEFAULT 'verified',       -- 'verified' or 'refunded'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table for tracking "Ad Deployment" attempts
+CREATE TABLE clickbank_ad_logs (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    platform_name VARCHAR(50),                   -- e.g., 'Facebook', 'Blog', 'Niche Forum'
+    hoplink_used TEXT NOT NULL,
+    deployment_status VARCHAR(20),               -- 'success' or 'failed'
+    deployed_at DATETIME
+);
