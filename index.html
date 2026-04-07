@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickBank Revenue Nexus</title>
+    <link rel="stylesheet" href="style.css"> <!-- We'll keep it simple -->
+</head>
+<body>
+    <div class="dashboard-container">
+        <h1>Revenue Nexus Dashboard</h1>
+        
+        <div class="ticker-box">
+            <h2>Total Revenue</h2>
+            <span id="revenue-ticker">$0.00</span>
+        </div>
+
+        <div class="button-grid">
+            <button onclick="placeAd()" class="btn-deploy">Place Ad</button>
+            <button onclick="fetchRevenue()" class="btn-refresh">Generate Income (Refresh)</button>
+        </div>
+        
+        <p id="status-msg">System Ready.</p>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
