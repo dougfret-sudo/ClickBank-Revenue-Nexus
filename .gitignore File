@@ -1,0 +1,20 @@
+# --- Security / Credentials ---
+# Never upload your actual credentials
+config.php
+credentials.php
+.env
+
+# --- OS / IDE Garbage ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Logs ---
+error_log
+*.log
+
+# --- Database Exports ---
+# Keep your schema.sql, but don't upload your actual data backups
+*.bak
+*.sql.gz
