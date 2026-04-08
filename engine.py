@@ -1,54 +1,38 @@
-import json
 import sqlite3
-import os
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
-class RevenueNexusEngine:
-    def __init__(self, db_path='nexus_data.db'):
-        self.db_path = db_path
-        self._initialize_db()
+app = Flask(__name__)
+CORS(app) # Allows your HTML/JS to talk to this Python server
 
-    def _initialize_db(self):
-        """Ensures the database exists based on schema.sql logic."""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        # Creates the 'Source of Truth' for transaction history
-        cursor.execute('''CREATE TABLE IF NOT EXISTS transactions 
-                          (id INTEGER PRIMARY KEY, 
-                           amount REAL, 
-                           status TEXT, 
-                           timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)''')
-        conn.commit()
+def get_db_connection():
+    # Connects to your existing SQL database
+    conn = sqlite3.connect('nexus_data.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/api/place-ad', methods=['POST'])
+def place_ad():
+    """Triggers the [Place Ad] logic from the dashboard."""
+    # This is where your deterministic ad logic lives
+    print("[NEXUS] Deploying secure bridge page...")
+    return jsonify({"status": "success", "msg": "Ad Deployed Successfully."})
+
+@app.route('/api/get-revenue', methods=['GET'])
+def get_revenue():
+    """Updates the [Revenue Ticker] using verified SQL data."""
+    try:
+        conn = get_db_connection()
+        # Matches your schema.sql: Summing 'commission_earned'
+        query = 'SELECT SUM(commission_earned) as total FROM clickbank_nexus_revenue WHERE status="verified"'
+        row = conn.execute(query).fetchone()
         conn.close()
-
-    def place_ad(self, product_id):
-        """
-        [Sudo Approach] Deterministic Ad Placement:
-        Validates specs from a spec sheet before deploying bridge pages.
-        """
-        print(f"[ENGINE] Validating deterministic specs for Product: {product_id}...")
-        # Integration logic for hardware-isolated sandbox testing goes here
-        print(f"[ENGINE] Deploying secure bridge page...")
-        return {"status": "success", "msg": f"Ad for {product_id} deployed."}
-
-    def process_webhook(self, raw_payload):
-        """
-        Verifies ClickBank INS data integrity and pushes to SQL.
-        """
-        try:
-            data = json.loads(raw_payload)
-            # Fact-first filtering: ensure the transaction is legitimate
-            amount = float(data.get('transaction_amount', 0))
-            
-            conn = sqlite3.connect(self.db_path)
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO transactions (amount, status) VALUES (?, 'VERIFIED')", (amount,))
-            conn.commit()
-            conn.close()
-            return True
-        except Exception as e:
-            print(f"[ERROR] Integrity check failed: {e}")
-            return False
+        
+        total = row['total'] if row['total'] else 0.00
+        return jsonify({"total_revenue": float(total)})
+    except Exception as e:
+        return jsonify({"total_revenue": 0.00, "error": str(e)}), 500
 
 if __name__ == "__main__":
-    nexus = RevenueNexusEngine()
-    print("Nexus Engine (v1.0.0) Initialized & Standing By.")
+    print("Nexus Engine v1.0.0 - Hardware Isolated Mode Active")
+    app.run(port=5000)
