@@ -1,0 +1,14 @@
+{
+    "clickbank": {
+        "secret_key": "YOUR_SECRET_KEY_HERE",
+        "commission_rate": 0.50
+    },
+    "database": {
+        "db_name": "nexus_data.db",
+        "type": "sqlite"
+    },
+    "server": {
+        "port": 5000,
+        "debug_mode": false
+    }
+}
