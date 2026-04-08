@@ -34,3 +34,16 @@ Unlike generic affiliate tools, this Nexus uses a **"Source of Truth"** methodol
 **Author**: [Your GitHub Username]  
 **Status**: Active Development  
 **Philosophy**: "I don't just write code; I engineer reliability."
+
+## 🏁 Quick Start Guide
+
+Welcome to the Nexus! Follow these steps to get your revenue engine live:
+
+1. **Upload Files**: Upload the project folder to your web server or local environment.
+2. **Configure**: Open `config.json` and replace `YOUR_SECRET_KEY_HERE` with the secret key found in your ClickBank "Advanced Tools" settings.
+3. **Launch the Engine**:
+   - Ensure Python is installed.
+   - Run the command: `python engine.py`
+4. **Connect ClickBank**: 
+   - Point your ClickBank INS URL to your `webhook_handler.php` location.
+5. **Start Tracking**: Open `index.html` in your browser. Use **[Place Ad]** to deploy and **[Generate Income]** to sync your earnings!
