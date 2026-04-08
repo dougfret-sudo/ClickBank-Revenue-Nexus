@@ -1,3 +1,5 @@
+:: This checks for and installs the parts the Engine needs to run
+pip install flask flask-cors
 #!/bin/bash
 echo "=========================================="
 echo "  ClickBank Revenue Nexus - Setup Logic"
