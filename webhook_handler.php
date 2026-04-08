@@ -1,36 +1,36 @@
 <?php
 /**
  * ClickBank Revenue Nexus - Webhook Handler
- * Refined for 100% Data Integrity & SQL Security
+ * Verified logic for schema.sql compatibility
  */
 
 $secret_key = "YOUR_CLICKBANK_SECRET"; 
-$message = json_decode(file_get_contents('php://input'), true); // Decode as associative array
+$message = json_decode(file_get_contents('php://input'), true);
 
-// 1. Deterministic Validation
 if (isset($message['secretKey']) && $message['secretKey'] === $secret_key) {
     
+    // Connect to your database
     $conn = new mysqli("localhost", "user", "password", "database");
 
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    if ($conn->connect_error) { die("Connection failed"); }
+
+    // Mapping ClickBank fields to your schema.sql columns
+    $tx_id      = $conn->real_escape_string($message['receipt']);
+    $sku        = $conn->real_escape_string($message['lineItems'][0]['itemNo']);
+    $sale_amt   = floatval($message['totalAccountAmount']);
+    // Assuming 50% commission for the logic - Adjust as needed
+    $commission = $sale_amt * 0.50; 
+
+    // INSERT into the table defined in your schema.sql
+    $sql = "INSERT INTO clickbank_nexus_revenue 
+            (transaction_id, product_sku, sale_amount, commission_earned, status) 
+            VALUES ('$tx_id', '$sku', $sale_amt, $commission, 'verified')";
+
+    if ($conn->query($sql)) {
+        echo "Nexus Sync Complete.";
     }
-
-    // 2. Map Particulars (Matching ClickBank INS v8.0 field names)
-    $tx_id  = $message['receipt'];
-    $amount = $message['totalAccountAmount'];
-    $status = "VERIFIED";
-
-    // 3. Secure Insertion (Prepared Statements to prevent "hallucinations" or errors)
-    $stmt = $conn->prepare("INSERT INTO transactions (transaction_id, amount, status) VALUES (?, ?, ?)");
-    $stmt->bind_param("sds", $tx_id, $amount, $status);
-
-    $stmt->execute();
     
-    $stmt->close();
     $conn->close();
-    
-    echo "Nexus Sync Complete.";
 } else {
     header('HTTP/1.1 403 Forbidden');
     echo "Unauthorized Access.";
