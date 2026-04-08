@@ -1,3 +1,4 @@
+pip install -r requirements.txt
 :: This checks for and installs the parts the Engine needs to run
 pip install flask flask-cors
 @echo off
